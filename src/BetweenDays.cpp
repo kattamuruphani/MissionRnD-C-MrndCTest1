@@ -22,7 +22,7 @@ Difficulty : Hard
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
+int days_cal(int*, int*);
 struct node{
 	int data;
 	struct node *next;
@@ -30,5 +30,116 @@ struct node{
 
 
 int between_days(struct node *date1head, struct node *date2head){
-	return -1;
+	int mul = 10, year1[3], year2[3],i=0;
+	if (date1head==NULL||date2head==NULL)
+
+		return -1;
+	else{
+		for (i = 0; i < 3; i++){
+			year1[i] = 0;
+			year2[i] = 0;
+		}
+		for (i = 0; i < 2; i++){
+			year1[0] *= mul;
+			year2[0] *= mul;
+			year1[0] += date1head->data;
+			year2[0] += date2head->data;
+			date1head = date1head->next;
+			date2head = date2head->next;
+			mul = 10;
+		}
+		mul = 1;
+		for (i = 0; i < 2; i++){
+
+			year1[1] *= mul;
+			year2[1] *= mul;
+			year1[1] += date1head->data;
+			year2[1] += date2head->data;
+			date1head = date1head->next;
+			date2head = date2head->next;
+			mul = 10;
+
+		}
+		mul = 1;
+		for (i = 0; i < 4; i++){
+
+			year1[2] *= mul;
+			year2[2] *= mul;
+			year1[2] += date1head->data;
+			year2[2] += date2head->data;
+			date1head = date1head->next;
+			date2head = date2head->next;
+			mul = 10;
+
+		}
+	}
+	return days_cal(year1, year2);
+}
+
+
+int days_cal(int *year1, int *year2){
+
+	int years, months, days = 0, start, x, y, i, leaps = 0;
+	int months_days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	x = year1[2];
+	y = year2[2];
+	if (y - x >= 4){
+		start = year1[2] % 4;
+		if (start > 0){
+			x += 4 - start;
+		}
+		for (i = x+1; i < y; i = i + 4){
+
+		}
+		leaps = i;
+
+	}
+	years =( y - x)-1;
+	days += (years - leaps) * 365 + leaps * 366;
+	x = year1[1];
+	y = year2[1];
+
+	for (i = year1[1]; i < 12; i++){
+		if (i == 1 && year1[2] % 4 == 0){
+			if (year1[2] % 100 == 0 && year1[2] % 400 != 0){
+				days += months_days[i];
+			}
+			else{
+				days += months_days[i]+1;
+			}
+		}
+		else{
+			days += months_days[i];
+		}
+	}
+	for (i = 0; i < year1[1]-1 ; i++){
+		if (i == 1 && year1[2] % 4 == 0){
+			if (year2[2] % 100 == 0 && year2[2] % 400 != 0){
+				days += months_days[i];
+			}
+			else{
+				days += months_days[i] + 1;
+			}
+		}
+		else{
+			days += months_days[i];
+		}
+	}
+	if (year1[1] == 2 && year1[2] % 4 == 0){
+		if (year2[2] % 100 == 0 && year2[2] % 400 != 0){
+			days += months_days[i]-year1[1]+1;
+		}
+		else{
+			days += months_days[i] -year1[1];
+		}
+	}
+	else{
+		days += months_days[i] - year1[1];
+	}
+	days += year2[0];
+
+
+
+	return days;
+
 }
